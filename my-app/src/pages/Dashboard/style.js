@@ -119,6 +119,16 @@ export const MainTechs = styled.div`
       font-size: 10px;
     }
 
+    button {
+      background-color: #212529;
+      color: white;
+      font-size: 12px;
+      width: 55.49px;
+      height: 32px;
+      border-radius: 4px;
+      border: none;
+    }
+
     :hover {
       background-color: #343b41;
 

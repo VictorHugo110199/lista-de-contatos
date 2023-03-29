@@ -9,7 +9,7 @@ import { UserContext } from "../../contexts/UserContext";
 function Login() {
   const navigate = useNavigate();
 
-  const { Login, setIsLoged } = useContext(UserContext);
+  const { Login, setIsLoged, LoadUser } = useContext(UserContext);
 
   const onSubmitFunction = (data) => {
     reset();
@@ -34,6 +34,7 @@ function Login() {
     const token = localStorage.getItem("@TOKEN");
     if (token) {
       setIsLoged(true);
+      LoadUser();
       navigate("/dashboard");
     }
   }, []);

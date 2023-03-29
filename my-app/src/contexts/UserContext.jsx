@@ -49,6 +49,7 @@ export const UserProvider = ({ children }) => {
         setUser(data);
       } catch (error) {
         console.error(error);
+        navigate("/");
       }
     }
   }

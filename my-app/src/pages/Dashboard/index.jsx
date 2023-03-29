@@ -3,64 +3,53 @@ import {
   Header,
   DivUserInfos,
   MainTechs,
-  DivTechLevelDeletBtn,
   DivTechHeader,
 } from "./style";
 import { Navigate, useNavigate } from "react-router-dom";
-import { useContext, useState, useEffect } from "react";
+import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
-import api from "../../service/api";
 import { ContactContext } from "../../contexts/ContactContext";
+import ModalContact from "../../components/modalNewContact";
 
 function Dashboard() {
-  const { user, contacts, setContacts, isLoged, setIsLoged } =
-    useContext(UserContext);
+  const { user, contacts, setContacts, isLoged } = useContext(UserContext);
 
-  const { CreateContact, DeleteContact, UpdateContact } =
+  const { DeleteContact, isModalOpen, setIsModalOpen } =
     useContext(ContactContext);
 
   const navigate = useNavigate();
 
   const name = user.name;
 
-  console.log(contacts, user);
-
   function LogOut() {
     window.localStorage.clear();
     navigate("/");
   }
 
-  // async function handleTech(id) {
-  //   const token = localStorage.getItem("@TOKEN");
-  //   if (token) {
-  //     try {
-  //       api.defaults.headers.authorization = `Bearer ${token}`;
-  //       await api.delete(`/users/techs/${id}`);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   }
+  async function handleContacts(id) {
+    DeleteContact(id);
 
-  //   const newTechs = contacts.filter((elem) => {
-  //     return elem.id !== id;
-  //   });
-  //   setContacts(newTechs);
-  // }
+    const newContacts = contacts.filter((elem) => {
+      return elem.id !== id;
+    });
+    setContacts(newContacts);
+  }
 
   return (
     <>
       {isLoged ? (
         <ContainerPage>
+          {isModalOpen && <ModalContact setModalState={setIsModalOpen} />}
           <Header>
             <div>
-              <button onClick={() => navigate("/")}>Usuário</button>
+              <button onClick={() => navigate("/user")}>Usuário</button>
               <button onClick={() => LogOut()}>Sair</button>
             </div>
           </Header>
           <DivUserInfos>
             <div>
               <h2>Olá, {name}</h2>
-              <button>Add Contato</button>
+              <button onClick={() => setIsModalOpen(true)}>Add Contato</button>
             </div>
           </DivUserInfos>
           <MainTechs>
@@ -74,6 +63,9 @@ function Dashboard() {
                     <h3>
                       {element.name}, {element.email}, {element.number}
                     </h3>
+                    <button onClick={() => handleContacts(element.id)}>
+                      Excluir
+                    </button>
                   </li>
                 );
               })}
