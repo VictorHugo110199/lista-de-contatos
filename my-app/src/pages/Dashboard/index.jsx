@@ -6,13 +6,14 @@ import {
   DivTechHeader,
 } from "./style";
 import { Navigate, useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { ContactContext } from "../../contexts/ContactContext";
 import ModalContact from "../../components/modalNewContact";
 
 function Dashboard() {
-  const { user, contacts, setContacts, isLoged } = useContext(UserContext);
+  const { user, contacts, setContacts, isLoged, LoadUser } =
+    useContext(UserContext);
 
   const { DeleteContact, isModalOpen, setIsModalOpen } =
     useContext(ContactContext);
@@ -34,6 +35,14 @@ function Dashboard() {
     });
     setContacts(newContacts);
   }
+
+  useEffect(() => {
+    const token = localStorage.getItem("@TOKEN");
+    if (!token) {
+      navigate("/");
+    }
+    LoadUser();
+  }, [isModalOpen]);
 
   return (
     <>

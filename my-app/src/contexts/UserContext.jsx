@@ -39,6 +39,38 @@ export const UserProvider = ({ children }) => {
       .catch((err) => console.log(err));
   }
 
+  async function Update(data, id) {
+    const token = localStorage.getItem("@TOKEN");
+    if (token) {
+      try {
+        api.defaults.headers.authorization = `Bearer ${token}`;
+        await api.patch(`/users/${id}`, data).then((res) => {
+          LoadUser();
+          toast("Atualização De dados feita com sucesso!");
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+  async function Delete(id) {
+    const token = localStorage.getItem("@TOKEN");
+    if (token) {
+      try {
+        api.defaults.headers.authorization = `Bearer ${token}`;
+        await api.delete(`/users/${id}`).then((res) => {
+          LoadUser();
+          toast("Conta deletada com sucesso!");
+          window.localStorage.clear();
+          navigate("/");
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
   async function LoadUser() {
     const token = localStorage.getItem("@TOKEN");
     if (token) {
@@ -60,6 +92,8 @@ export const UserProvider = ({ children }) => {
         Register,
         Login,
         LoadUser,
+        Update,
+        Delete,
         isLoged,
         setIsLoged,
         contacts,
