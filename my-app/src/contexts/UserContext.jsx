@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useState } from "react";
 import { toast } from "react-toastify";
 import api from "../service/api";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,8 @@ export const UserProvider = ({ children }) => {
 
   const [isLoged, setIsLoged] = useState(false);
 
+  const [user, setUser] = useState({});
+
   const [contacts, setContacts] = useState([]);
 
   async function Register(data) {
@@ -19,7 +21,7 @@ export const UserProvider = ({ children }) => {
         toast("Conta Criada com sucesso!");
         navigate("/login");
       })
-      .catch((err) => toast(err.response.data.message[0]));
+      .catch((err) => console.log(err));
   }
 
   async function Login(data) {
@@ -28,19 +30,41 @@ export const UserProvider = ({ children }) => {
       .then((res) => {
         window.localStorage.clear();
         window.localStorage.setItem("@TOKEN", res.data.token);
-        window.localStorage.setItem("@USERID", res.data.user.id);
+        window.localStorage.setItem("@USERID", res.data.id);
         setIsLoged(true);
-        toast("Sucesso total campeão!");
+        LoadUser();
+        toast("Login realizado com sucesso!");
         navigate("/dashboard");
       })
-      .catch((err) => toast(err.response.data.message[0]));
+      .catch((err) => console.log(err));
   }
 
-  async function LoadUser() {}
+  async function LoadUser() {
+    const token = localStorage.getItem("@TOKEN");
+    if (token) {
+      try {
+        api.defaults.headers.authorization = `Bearer ${token}`;
+        const { data } = await api.get("/profile");
+        setContacts(data.contacts);
+        setUser(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
 
   return (
     <UserContext.Provider
-      value={{ Register, Login, isLoged, setIsLoged, contacts, setContacts }}
+      value={{
+        Register,
+        Login,
+        LoadUser,
+        isLoged,
+        setIsLoged,
+        contacts,
+        setContacts,
+        user,
+      }}
     >
       {children}
     </UserContext.Provider>
