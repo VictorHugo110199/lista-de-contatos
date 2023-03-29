@@ -86,12 +86,12 @@ function User() {
           <DivForm>
             <form onSubmit={handleSubmit(onSubmitFunction)}>
               <div>
-                <p>Nome</p>
+                <p>Nome - Obrigatorio</p>
                 <input type="text" id="name" {...register("name")} />
                 {errors.name?.message}
               </div>
               <div>
-                <p>Email</p>
+                <p>Email - Obrigatorio</p>
                 <input type="email" id="email" {...register("email")} />
                 {errors.email?.message}
               </div>
